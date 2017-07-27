@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+﻿using System.Collections.Generic;
 
-namespace PathFinderClassLibrary
+namespace PathFinderClassLibrary.PathNodes
 {
     public abstract class PathNode<T> where T : PathNode<T>
     {
         public string Name { get; }
-        public abstract ICollection<T> Neighbors { get; }
+        public abstract IEnumerable<T> Neighbors { get; }
 
         public PathNode(string name)
         {
@@ -18,7 +14,7 @@ namespace PathFinderClassLibrary
 
         public abstract void AddNeighbor(T node);
 
-        public abstract double DistanceTo(T node);
+        public abstract float DistanceTo(T node);
 
         // add multiple nodes? 
     }

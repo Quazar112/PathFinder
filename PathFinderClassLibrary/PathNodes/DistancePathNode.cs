@@ -20,12 +20,14 @@ namespace PathFinderClassLibrary.PathNodes
         /// </summary>
         public override void AddNeighbor(DistancePathNode node)
         {
-            _neighbors.Add(node);
-            _distance_to.Add(node.Name, 1f);
+            AddNeighbor(node, 1f);
         }
 
         public void AddNeighbor(DistancePathNode node, float distance_to)
         {
+            if (_distance_to.ContainsKey(node.Name) || node.Name == this.Name) {
+                throw new ArgumentException("Neighbors must have unique names.", "node");
+            }
             _neighbors.Add(node);
             _distance_to.Add(node.Name, distance_to);
         }

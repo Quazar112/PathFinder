@@ -9,7 +9,7 @@ namespace PathFinderClassLibrary.PathNodes
         private List<CoordinatePathNode> _neighbors;
         public override IEnumerable<CoordinatePathNode> Neighbors => _neighbors;
 
-        public CoordinatePathNode(string name, int x, int y) : base(name)
+        public CoordinatePathNode(string name, float x, float y) : base(name)
         {
             _neighbors = new List<CoordinatePathNode>();
             this.x = x;

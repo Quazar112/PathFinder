@@ -5,7 +5,7 @@ using PathFinderClassLibrary.PathNodes;
 
 namespace PathFinderClassLibrary
 {
-    class PathFinderStep<T> where T : PathNode<T>
+    public class PathFinderStep<T> where T : PathNode<T>
     {
         private List<string> _path;
         private T _cur_node;

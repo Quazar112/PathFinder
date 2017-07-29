@@ -1,0 +1,1 @@
+- keep dictionary of shortest distances to a given node, when reach node first time set current distance, otherwise if shorter distance overwrite, if longer or equal distance drop path.

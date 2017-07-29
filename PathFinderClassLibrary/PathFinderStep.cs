@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using PathFinderClassLibrary.PathNodes;
 
@@ -11,7 +10,7 @@ namespace PathFinderClassLibrary
         private T _cur_node;
         private float _total_distance;
 
-        public ReadOnlyCollection<string> Path => _path.AsReadOnly();
+        public IReadOnlyList<string> Path => _path.AsReadOnly();
         public T CurentNode => _cur_node;
         public float TotalDistance => _total_distance;
 

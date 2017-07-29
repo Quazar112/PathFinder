@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using PathFinderClassLibrary.PathNodes;
 
 namespace PathFinderClassLibrary.PathFinder
@@ -13,9 +9,9 @@ namespace PathFinderClassLibrary.PathFinder
         bool HasShortestPath { get; }
         bool IsStarted { get; }
 
-        List<string> ShortestPath { get; }
-        int ShortestDistance { get; }
-        T Nodes { get; }
+        IReadOnlyList<string> ShortestPath { get; }
+        float ShortestDistance { get; }
+        ICollection<T> Nodes { get; }
 
         PathFinderStep<T> DoPathFinderStep();
 

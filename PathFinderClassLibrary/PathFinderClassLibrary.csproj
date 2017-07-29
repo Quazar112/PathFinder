@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PathFinderStep.cs" />
+    <Compile Include="PathFinder\BasePathFinder.cs" />
+    <Compile Include="PathFinder\IPathFinder.cs" />
     <Compile Include="PathNodes\CoordinatePathNode.cs" />
     <Compile Include="PathNodes\DistancePathNode.cs" />
     <Compile Include="PathNodes\PathNode.cs" />

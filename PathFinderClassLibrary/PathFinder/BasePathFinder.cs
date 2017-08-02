@@ -8,11 +8,12 @@ using PriorityQueueClassLibrary;
 
 namespace PathFinderClassLibrary.PathFinder
 {
-    abstract class BasePathFinder<T> : IPathFinder<T> where T : PathNode<T>
+    class BasePathFinder<T> : IPathFinder<T> where T : PathNode<T>
     {
         public bool HasPath { get; private set; } = false;
         public bool HasShortestPath { get; private set; } = false;
         public bool IsStarted { get; private set; } = false;
+        public bool IsEnded { get; private set; } = false;
         public IReadOnlyList<string> ShortestPath {
             get {
                 if (HasShortestPath) return _step.Path;
@@ -25,28 +26,71 @@ namespace PathFinderClassLibrary.PathFinder
                 else throw new InvalidOperationException("Shortest path has not been calculated.");
             }
             private set {
-                    _shortest_distance = value;
+                _shortest_distance = value;
             }
         }
         public ICollection<T> Nodes => _nodes.AsReadOnly();
 
+        private Dictionary<string, float> _shortest_sofar;
+        private Func<PathFinderStep<T>, T, float> _heuristic;
+        private T _goal;
         private List<T> _nodes;
         private float _shortest_distance;
         private PathFinderStep<T> _step;
-        private PriorityQueue<T> _queue;
+        private PriorityQueue<PathFinderStep<T>> _queue;
 
-        public BasePathFinder(List<T> nodes)
+        public BasePathFinder(List<T> nodes, Func<PathFinderStep<T>, T, float> heuristicFunction)
         {
             _nodes = nodes;
-            _queue = new PriorityQueue<T>();
-
-
+            _queue = new PriorityQueue<PathFinderStep<T>>();
+            _shortest_sofar = new Dictionary<string, float>();
+            _heuristic = heuristicFunction;
         }
 
         // dictionary of shortest distance to each node, drop steps with distance to current node >= minimum so far
         // to find shortest: once find first path, can stop once total distances are higher
 
-        public abstract PathFinderStep<T> DoPathFinderStep();
+        public PathFinderStep<T> DoPathFinderStep()
+        {
+            if (_queue.IsEmpty) {
+                if (!IsStarted) {
+                    throw new InvalidOperationException("Path finding must be started before stepping through.");
+                } else if(IsEnded) {
+                    throw new IndexOutOfRangeException("Cannot step through after all paths have been examined.");
+                } else {
+                    IsEnded = true;
+                    if (HasPath) HasShortestPath = true;
+                    return null; 
+                }
+            }
+
+            PathFinderStep<T> step = _queue.Dequeue(); //TODO check if already solved?
+
+            if(step.CurentNode.Name == _goal.Name) {
+                HasPath = true;
+
+                //TODO finish this
+
+
+            }
+
+
+            List<PathFinderStep<T>> nextSteps = step.GetNextSteps();
+
+            //TODO check if haspath and heuristic > path distance set max 
+
+            foreach(PathFinderStep<T> s in nextSteps) {
+                if (_shortest_sofar.ContainsKey(s.CurentNode.Name) && s.TotalDistance >= _shortest_sofar[s.CurentNode.Name]) {
+                    continue; //if returned step goes to a node that already has been visited with same or shorter distance, ignore it
+                } else {
+                    _shortest_sofar[s.CurentNode.Name] = s.TotalDistance;
+                    _queue.Enqueue(s, _heuristic(s, _goal));
+                }
+            }
+
+            return step;
+        }
+
         public abstract List<string> FindPath(string startNode, string endNode, out int totalDistance);
         public abstract List<string> FindShortestPath(T startNode, T endNode, out int totalDistance);
     }

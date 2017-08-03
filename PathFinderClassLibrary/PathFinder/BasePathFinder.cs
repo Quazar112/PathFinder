@@ -16,7 +16,7 @@ namespace PathFinderClassLibrary.PathFinder
         public bool IsEnded { get; private set; } = false;
         public IReadOnlyList<string> ShortestPath {
             get {
-                if (HasShortestPath) return _step.Path;
+                if (HasShortestPath) return _shortest_step.Path;
                 else throw new InvalidOperationException("Shortest path has not been calculated.");
             }
         }
@@ -37,6 +37,7 @@ namespace PathFinderClassLibrary.PathFinder
         private List<T> _nodes;
         private float _shortest_distance;
         private PathFinderStep<T> _step;
+        private PathFinderStep<T> _shortest_step;
         private PriorityQueue<PathFinderStep<T>> _queue;
 
         public BasePathFinder(List<T> nodes, Func<PathFinderStep<T>, T, float> heuristicFunction)
@@ -59,21 +60,23 @@ namespace PathFinderClassLibrary.PathFinder
                     throw new IndexOutOfRangeException("Cannot step through after all paths have been examined.");
                 } else {
                     IsEnded = true;
-                    if (HasPath) HasShortestPath = true;
+                    if (HasPath) {
+                        HasShortestPath = true;
+                        _shortest_distance = _step.TotalDistance;
+                    }
                     return null; 
                 }
             }
 
-            PathFinderStep<T> step = _queue.Dequeue(); //TODO check if already solved?
+            PathFinderStep<T> step = _queue.Dequeue(); 
 
             if(step.CurentNode.Name == _goal.Name) {
+                if (HasPath && step.TotalDistance < _shortest_distance || !HasPath) {
+                    _shortest_distance = step.TotalDistance;
+                    _shortest_step = _step;
+                }
                 HasPath = true;
-
-                //TODO finish this
-
-
             }
-
 
             List<PathFinderStep<T>> nextSteps = step.GetNextSteps();
 
@@ -91,7 +94,11 @@ namespace PathFinderClassLibrary.PathFinder
             return step;
         }
 
+        public abstract void StartPathFinding(string startNode, string endNode);
+        public abstract void StartPathFinding(T startNode, T endNode);
         public abstract List<string> FindPath(string startNode, string endNode, out int totalDistance);
+        public abstract List<string> FindPath(T startNode, T endNode, out int totalDistance);
+        public abstract List<string> FindShortestPath(string startNode, string endNode, out int totalDistance);
         public abstract List<string> FindShortestPath(T startNode, T endNode, out int totalDistance);
     }
 }

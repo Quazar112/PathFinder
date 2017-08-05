@@ -11,13 +11,12 @@ namespace PathFinderClassLibrary.PathFinder
 
         IReadOnlyList<string> ShortestPath { get; }
         float ShortestDistance { get; }
-        ICollection<T> Nodes { get; }
 
         PathFinderStep<T> DoPathFinderStep();
 
-        List<string> FindPath(string startNode, string endNode, out int totalDistance);
+        List<string> FindPath(string startNode, string endNode, out float totalDistance);
 
-        List<string> FindShortestPath(T startNode, T endNode, out int totalDistance);
+        List<string> FindShortestPath(T startNode, T endNode, out float totalDistance);
 
         //Constructor has nodes as arguments
     }

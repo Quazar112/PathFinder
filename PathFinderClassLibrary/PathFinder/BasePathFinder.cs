@@ -29,20 +29,20 @@ namespace PathFinderClassLibrary.PathFinder
                 _shortest_distance = value;
             }
         }
-        public ICollection<T> Nodes => _nodes.AsReadOnly();
+        //public ICollection<T> Nodes => _nodes.AsReadOnly();
 
         private Dictionary<string, float> _shortest_sofar;
         private Func<PathFinderStep<T>, T, float> _heuristic;
         private T _goal;
-        private List<T> _nodes;
+        //private List<T> _nodes;
         private float _shortest_distance;
         private PathFinderStep<T> _step;
         private PathFinderStep<T> _shortest_step;
         private PriorityQueue<PathFinderStep<T>> _queue;
 
-        public BasePathFinder(List<T> nodes, Func<PathFinderStep<T>, T, float> heuristicFunction)
+        public BasePathFinder(/*List<T> nodes, */Func<PathFinderStep<T>, T, float> heuristicFunction)
         {
-            _nodes = nodes;
+           // _nodes = nodes;
             _queue = new PriorityQueue<PathFinderStep<T>>();
             _shortest_sofar = new Dictionary<string, float>();
             _heuristic = heuristicFunction;
@@ -70,8 +70,14 @@ namespace PathFinderClassLibrary.PathFinder
 
             PathFinderStep<T> step = _queue.Dequeue(); 
 
+            if(HasPath && step.TotalDistance > _shortest_distance) { //know have shortest path
+                _queue.Clear();
+                HasShortestPath = true;
+                IsEnded = true;
+                return null;
+            }
             if(step.CurentNode.Name == _goal.Name) {
-                if (HasPath && step.TotalDistance < _shortest_distance || !HasPath) {
+                if (!HasPath || step.TotalDistance < _shortest_distance) {
                     _shortest_distance = step.TotalDistance;
                     _shortest_step = _step;
                 }
@@ -79,8 +85,6 @@ namespace PathFinderClassLibrary.PathFinder
             }
 
             List<PathFinderStep<T>> nextSteps = step.GetNextSteps();
-
-            //TODO check if haspath and heuristic > path distance set max 
 
             foreach(PathFinderStep<T> s in nextSteps) {
                 if (_shortest_sofar.ContainsKey(s.CurentNode.Name) && s.TotalDistance >= _shortest_sofar[s.CurentNode.Name]) {
@@ -94,11 +98,45 @@ namespace PathFinderClassLibrary.PathFinder
             return step;
         }
 
-        public abstract void StartPathFinding(string startNode, string endNode);
-        public abstract void StartPathFinding(T startNode, T endNode);
-        public abstract List<string> FindPath(string startNode, string endNode, out int totalDistance);
-        public abstract List<string> FindPath(T startNode, T endNode, out int totalDistance);
-        public abstract List<string> FindShortestPath(string startNode, string endNode, out int totalDistance);
-        public abstract List<string> FindShortestPath(T startNode, T endNode, out int totalDistance);
+        public void StartPathFinding(T startNode, T endNode)
+        {
+            HasPath = HasShortestPath = IsEnded = false;
+            IsStarted = true;
+            _goal = endNode;
+            PathFinderStep<T> step = new PathFinderStep<T>(startNode);
+            _queue.Enqueue(step, _heuristic(step, _goal));
+        }
+        public IReadOnlyList<string> FindPath(T startNode, T endNode, out float totalDistance)
+        {
+            StartPathFinding(startNode, endNode);
+            totalDistance = -1;
+            while(!HasPath || !IsEnded) {
+                DoPathFinderStep();
+            }
+            if (!HasPath) return null;
+            else {
+                totalDistance = _shortest_step.TotalDistance;
+                return _shortest_step.Path;
+            }
+        }
+        public IReadOnlyList<string> FindShortestPath(T startNode, T endNode, out float totalDistance)
+        {
+            StartPathFinding(startNode, endNode);
+            totalDistance = -1;
+            while (!HasShortestPath || !IsEnded) {
+                DoPathFinderStep();
+            }
+            if (!HasPath) return null;
+            else {
+                totalDistance = _shortest_step.TotalDistance;
+                return _shortest_step.Path;
+            }
+        }
     }
 }
+
+
+//TODO:
+//- may not need all the different state variables, some may be the same
+//- don't need nodes assuming they are connected to their neighbors
+//- copy certain functions to IPathFinder

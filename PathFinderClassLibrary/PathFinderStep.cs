@@ -10,7 +10,14 @@ namespace PathFinderClassLibrary
         private T _cur_node;
         private float _total_distance;
 
-        public IReadOnlyList<string> Path => _path.AsReadOnly();
+        public List<string> Path 
+        {
+            get {
+                List<string> p = new List<string>(_path);
+                p.Add(_cur_node.Name);
+                return p;
+            }
+        }
         public T CurentNode => _cur_node;
         public float TotalDistance => _total_distance;
 

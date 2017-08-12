@@ -8,7 +8,7 @@ using PriorityQueueClassLibrary;
 
 namespace PathFinderClassLibrary.PathFinder
 {
-    class BasePathFinder<T> : IPathFinder<T> where T : PathNode<T>
+    public class BasePathFinder<T> : IPathFinder<T> where T : PathNode<T>
     {
         public bool HasPath { get; private set; } = false;
         public bool HasShortestPath { get; private set; } = false;
@@ -36,7 +36,7 @@ namespace PathFinderClassLibrary.PathFinder
         private T _goal;
         //private List<T> _nodes;
         private float _shortest_distance;
-        private PathFinderStep<T> _step;
+        //private PathFinderStep<T> _step;
         private PathFinderStep<T> _shortest_step;
         private PriorityQueue<PathFinderStep<T>> _queue;
 
@@ -62,7 +62,7 @@ namespace PathFinderClassLibrary.PathFinder
                     IsEnded = true;
                     if (HasPath) {
                         HasShortestPath = true;
-                        _shortest_distance = _step.TotalDistance;
+                        _shortest_distance = _shortest_step.TotalDistance;
                     }
                     return null; 
                 }
@@ -79,7 +79,7 @@ namespace PathFinderClassLibrary.PathFinder
             if(step.CurentNode.Name == _goal.Name) {
                 if (!HasPath || step.TotalDistance < _shortest_distance) {
                     _shortest_distance = step.TotalDistance;
-                    _shortest_step = _step;
+                    _shortest_step = step;
                 }
                 HasPath = true;
             }

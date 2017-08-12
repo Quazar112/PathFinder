@@ -14,10 +14,7 @@ namespace PathFinderClassLibrary.PathFinder
 
         PathFinderStep<T> DoPathFinderStep();
 
-        List<string> FindPath(string startNode, string endNode, out float totalDistance);
+        IReadOnlyList<string> FindShortestPath(T startNode, T endNode, out float totalDistance);
 
-        List<string> FindShortestPath(T startNode, T endNode, out float totalDistance);
-
-        //Constructor has nodes as arguments
     }
 }

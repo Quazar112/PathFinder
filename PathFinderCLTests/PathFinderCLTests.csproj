@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="PathNodeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PathFindingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

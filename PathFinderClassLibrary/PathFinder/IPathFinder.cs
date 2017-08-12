@@ -9,12 +9,13 @@ namespace PathFinderClassLibrary.PathFinder
         bool HasShortestPath { get; }
         bool IsStarted { get; }
 
-        IReadOnlyList<string> ShortestPath { get; }
+        List<string> ShortestPath { get; }
         float ShortestDistance { get; }
 
         PathFinderStep<T> DoPathFinderStep();
 
-        IReadOnlyList<string> FindShortestPath(T startNode, T endNode, out float totalDistance);
+        List<string> FindPath(T startNode, T endNode, out float totalDistance);
+        List<string> FindShortestPath(T startNode, T endNode, out float totalDistance);
 
     }
 }

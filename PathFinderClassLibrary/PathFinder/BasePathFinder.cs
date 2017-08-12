@@ -14,35 +14,31 @@ namespace PathFinderClassLibrary.PathFinder
         public bool HasShortestPath { get; private set; } = false;
         public bool IsStarted { get; private set; } = false;
         public bool IsEnded { get; private set; } = false;
-        public IReadOnlyList<string> ShortestPath {
+        public List<string> ShortestPath {
             get {
-                if (HasShortestPath) return _shortest_step.Path;
+                if (HasPath) return _shortest_step.Path;
                 else throw new InvalidOperationException("Shortest path has not been calculated.");
             }
         }
         public float ShortestDistance {
             get {
-                if (HasShortestPath) return _shortest_distance;
+                if (HasPath) return _shortest_distance;
                 else throw new InvalidOperationException("Shortest path has not been calculated.");
             }
             private set {
                 _shortest_distance = value;
             }
         }
-        //public ICollection<T> Nodes => _nodes.AsReadOnly();
 
         private Dictionary<string, float> _shortest_sofar;
         private Func<PathFinderStep<T>, T, float> _heuristic;
         private T _goal;
-        //private List<T> _nodes;
         private float _shortest_distance;
-        //private PathFinderStep<T> _step;
         private PathFinderStep<T> _shortest_step;
         private PriorityQueue<PathFinderStep<T>> _queue;
 
-        public BasePathFinder(/*List<T> nodes, */Func<PathFinderStep<T>, T, float> heuristicFunction)
+        public BasePathFinder(Func<PathFinderStep<T>, T, float> heuristicFunction)
         {
-           // _nodes = nodes;
             _queue = new PriorityQueue<PathFinderStep<T>>();
             _shortest_sofar = new Dictionary<string, float>();
             _heuristic = heuristicFunction;
@@ -106,7 +102,7 @@ namespace PathFinderClassLibrary.PathFinder
             PathFinderStep<T> step = new PathFinderStep<T>(startNode);
             _queue.Enqueue(step, _heuristic(step, _goal));
         }
-        public IReadOnlyList<string> FindPath(T startNode, T endNode, out float totalDistance)
+        public List<string> FindPath(T startNode, T endNode, out float totalDistance)
         {
             StartPathFinding(startNode, endNode);
             totalDistance = -1;
@@ -119,7 +115,7 @@ namespace PathFinderClassLibrary.PathFinder
                 return _shortest_step.Path;
             }
         }
-        public IReadOnlyList<string> FindShortestPath(T startNode, T endNode, out float totalDistance)
+        public List<string> FindShortestPath(T startNode, T endNode, out float totalDistance)
         {
             StartPathFinding(startNode, endNode);
             totalDistance = -1;

@@ -16,6 +16,11 @@ namespace PathFinderClassLibrary.PathNodes
 
         public abstract float DistanceTo(T node);
 
-        // add multiple nodes? 
+        public void AddNeighbors(params T[] nodes)
+        {
+            foreach(T node in nodes) {
+                AddNeighbor(node);
+            }
+        }
     }
 }

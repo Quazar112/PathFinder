@@ -94,5 +94,32 @@ namespace PathFinderCLTests
             Assert.AreEqual(3, pf.ShortestPath.Count);
             Assert.AreEqual(3, p.Path.Count);
         }
+
+        [TestMethod]
+        public void SimplePathFinding()
+        {
+            TestPathFinder pf = new TestPathFinder();
+            CoordinatePathNode n1 = new CoordinatePathNode("a", 0, 0);
+            CoordinatePathNode n2 = new CoordinatePathNode("b", 3, 4);
+            CoordinatePathNode n3 = new CoordinatePathNode("c", -4, 3);
+            CoordinatePathNode n4 = new CoordinatePathNode("d", 1, 1);
+            CoordinatePathNode n5 = new CoordinatePathNode("e", 3, 7);
+
+            n1.AddNeighbors(n2, n3, n4);
+            n2.AddNeighbor(n5);
+            n3.AddNeighbor(n5);
+
+            float d;
+            List<string> p = pf.FindShortestPath(n1, n5, out d);
+
+            Assert.AreEqual(8, d);
+            Assert.AreEqual(3, p.Count);
+            Assert.AreEqual(3, pf.ShortestPath.Count);
+            Assert.AreEqual(8, pf.ShortestDistance);
+            Assert.AreEqual("a", p[0]);
+            Assert.AreEqual("b", p[1]);
+            Assert.AreEqual("e", p[2]);
+        }
+
     }
 }

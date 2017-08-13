@@ -72,7 +72,7 @@ namespace PathFinderCLTests
             CoordinatePathNode n2 = new CoordinatePathNode("b", 1, 0);
             CoordinatePathNode n3 = new CoordinatePathNode("c", 3, 0);
             n1.AddNeighbor(n2);
-            n1.AddNeighbor(n3);
+            n2.AddNeighbor(n3);
 
             pf.StartPathFinding(n1, n3);
             Assert.IsTrue(pf.IsStarted && !pf.IsEnded && !pf.HasShortestPath && !pf.HasPath);
@@ -93,7 +93,6 @@ namespace PathFinderCLTests
             Assert.AreEqual(3, pf.ShortestDistance);
             Assert.AreEqual(3, pf.ShortestPath.Count);
             Assert.AreEqual(3, p.Path.Count);
-
         }
     }
 }
